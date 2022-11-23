@@ -11,7 +11,7 @@ export class UserService {
     return dataUser;
   }
 
-  findALl(): string {
-    return 'this.users;';
+  async findALl(): Promise<UserDto[]> {
+    return await this.prisma.users.findMany();
   }
 }

@@ -1,4 +1,11 @@
-import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  ValidationPipe,
+} from '@nestjs/common';
 import { validate } from 'class-validator';
 
 import { UserDto } from '../dto/user.dto/user.dto';
@@ -9,7 +16,9 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Post('/')
-  async create(@Body() user: UserDto): Promise<UserDto | any> {
+  async create(
+    @Body(new ValidationPipe()) user: UserDto,
+  ): Promise<UserDto | any> {
     validate(user).then((errors) => {
       if (errors.length > 0) {
         console.log('validation failed. errors: ', errors);
@@ -30,8 +39,9 @@ export class UserController {
       }
     }
   }
+
   @Get()
-  findAll(): string {
+  async findAll(): Promise<UserDto[]> {
     return this.userService.findALl();
   }
 }
