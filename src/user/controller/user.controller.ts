@@ -7,22 +7,29 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { UserDto } from '../dto/user.dto/user.dto';
+import * as bcrypt from 'bcrypt';
 import { UserService } from '../service/user/user.service';
+import * as jwt from 'jsonwebtoken';
 
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
 
   @Post('/')
-  async create(
-    @Body(new ValidationPipe()) user: UserDto,
-  ): Promise<UserDto | any> {
+  async create(@Body(new ValidationPipe()) user: UserDto): Promise<unknown> {
     try {
-      const post = await this.userService.create(user);
-      return post;
+      const password = await bcrypt.hash(user.password, 10);
+
+      const userData = await this.userService.create({ ...user, password });
+      const accessToken = jwt.sign(
+        { id: userData.id },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: '4000000s' },
+      );
+      return { accessToken };
     } catch (error) {
-      console.log(error.meta.target[0]);
-      if (error.meta.target[0] === 'email') {
+      console.log(error);
+      if (error.meta.target?.[0] === 'email') {
         return { status: HttpStatus.BAD_REQUEST, msg: 'email alredy taken' };
       } else {
         return { status: HttpStatus.BAD_REQUEST };

@@ -15,4 +15,12 @@ model Users {
   email String  @unique
   name  String
   password String
+  message Messages[]
+}
+model Messages {
+  id    Int     @id @default(autoincrement())
+  fromUser Users @relation(fields: [fromId], references: [id])
+  fromId Int  
+  toUserId Int
+  message  String
 }
