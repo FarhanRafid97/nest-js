@@ -6,8 +6,6 @@ import {
   Post,
   ValidationPipe,
 } from '@nestjs/common';
-import { validate } from 'class-validator';
-
 import { UserDto } from '../dto/user.dto/user.dto';
 import { UserService } from '../service/user/user.service';
 
@@ -19,14 +17,6 @@ export class UserController {
   async create(
     @Body(new ValidationPipe()) user: UserDto,
   ): Promise<UserDto | any> {
-    validate(user).then((errors) => {
-      if (errors.length > 0) {
-        console.log('validation failed. errors: ', errors);
-      } else {
-        console.log('validation succeed');
-      }
-    });
-
     try {
       const post = await this.userService.create(user);
       return post;

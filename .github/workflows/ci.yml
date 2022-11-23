@@ -68,7 +68,7 @@ jobs:
         uses: bahmutov/npm-install@v1
 
       - name: 📚 Create Test Database
-        run: npx sequelize-cli db:create
+        run: npx prisma generate
 
       - name: 🃏 Run jest
         run: npm run test
