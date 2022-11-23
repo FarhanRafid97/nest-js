@@ -11,6 +11,11 @@ export class UserService {
     return dataUser;
   }
 
+  async findUser(email: string): Promise<UserDto> {
+    const user = await this.prisma.users.findFirst({ where: { email } });
+    return user;
+  }
+
   async findALl(): Promise<UserDto[]> {
     return await this.prisma.users.findMany();
   }

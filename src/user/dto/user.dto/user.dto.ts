@@ -12,3 +12,11 @@ export class UserDto {
   @IsString()
   password: string;
 }
+
+export class AuthDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  password: string;
+}
